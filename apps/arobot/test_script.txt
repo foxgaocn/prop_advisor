@@ -1,0 +1,2 @@
+curl -H "Content-Type: application/json" -X POST "localhost:4000/api/webhook" -d '{"object": "page", "entry": [{"messaging": [{"message": 
+{"text": "TEST_MESSAGE"}}]}]}'
