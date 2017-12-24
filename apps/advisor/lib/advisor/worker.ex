@@ -11,7 +11,11 @@ defmodule Advisor.Worker do
   end
 
   ###SERVER API
-  def handle_call({:next, message}, _from, _state) do
-    {:reply, "You have said #{message}", []}
+  def handle_call({:next, message}, _from, state) do
+    case state do
+      [] -> {:reply, "Hey, nice to talk to you. I hope I can help you with your property journey. I'd like to ask some information so that I can give you appropriate advice", [:init]}
+      [:init] -> {:reply, "ok, so you want residential home", [:purpose] }
+      _ -> {:reply, "finished", [:purpose] }
+    end
   end
 end
