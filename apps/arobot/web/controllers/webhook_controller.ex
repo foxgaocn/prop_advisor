@@ -52,9 +52,9 @@ defmodule Arobot.WebhookController do
       "recipient": %{
         "id": sender_id,
       },
-      "buttons": Enum.map(content, fn(c) ->
+      "quick_replies": Enum.map(content, fn(c) ->
         %{
-          "type": "postback",
+          "content_type": "text",
           "title": elem(c, 0),
           "payload": elem(c, 1)
         } end )
