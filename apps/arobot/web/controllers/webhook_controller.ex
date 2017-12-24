@@ -52,12 +52,14 @@ defmodule Arobot.WebhookController do
       "recipient": %{
         "id": sender_id,
       },
-      "quick_replies": Enum.map(content, fn(c) ->
-        %{
-          "content_type": "text",
-          "title": elem(c, 0),
-          "payload": elem(c, 1)
-        } end )
+      "message": %{
+        "quick_replies": Enum.map(content, fn(c) ->
+          %{
+            "content_type": "text",
+            "title": elem(c, 0),
+            "payload": elem(c, 1)
+          } end )
+      }
     } |> Poison.encode!
 
     IO.inspect body
