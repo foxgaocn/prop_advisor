@@ -4,13 +4,12 @@ defmodule Arobot.WebhookController do
   @verify_token "abcd"
   
   def create(conn, %{"entry"=>entry, "object"=>"page"}=body) do
-    
     message = entry
       |> List.first
       |> Map.fetch!("messaging")
       |> List.first
     sender_id = message["sender"]["id"]
-    text = message["message"]["text"]
+    text = get_message(message["message"])
     reply(sender_id, text)
     text conn, "ok"
   end
@@ -21,6 +20,9 @@ defmodule Arobot.WebhookController do
       "hub.challenge" => challenge}) do
     text conn, challenge
   end
+
+  defp get_message(%{"quick_reply"=> %{"payload"=> payload}}), do: payload
+  defp get_message(%{"text"=> text}), do: text
 
   defp reply(sender_id, message) do
     message
