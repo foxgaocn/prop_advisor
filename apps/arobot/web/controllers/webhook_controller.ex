@@ -12,7 +12,7 @@ defmodule Arobot.WebhookController do
     sender_id = message["sender"]["id"]
     text = message["message"]["text"]
     reply(sender_id, text)
-    text conn, "You said #{text}"
+    text conn, "ok"
   end
 
   def index(conn, %{
@@ -23,13 +23,19 @@ defmodule Arobot.WebhookController do
   end
 
   defp reply(sender_id, message) do
+    message
+      |> Advisor.Worker.next
+      |> Enum.map(&send_message(sender_id, &1))
+  end
+
+  defp send_message(sender_id, {:text, content}) do
     body = %{
       "messaging_type": "RESPONSE",
       "recipient": %{
         "id": sender_id,
       },
       "message": %{
-        "text": Advisor.Worker.next(message)
+        "text": content
       }
     } |> Poison.encode!
 
@@ -39,4 +45,26 @@ defmodule Arobot.WebhookController do
       body,
       [{"Content-Type", "application/json"}]
   end
+
+  defp send_message(sender_id, {:choice, content}) do
+    body = %{
+      "messaging_type": "RESPONSE",
+      "recipient": %{
+        "id": sender_id,
+      },
+      "buttons": Enum.map(content, fn(c) ->
+        %{
+          "type": "postback",
+          "title": elem(c, 0),
+          "payload": elem(c, 1)
+        } end )
+    } |> Poison.encode!
+
+    IO.inspect body
+
+    HTTPoison.post "https://graph.facebook.com/v2.6/me/messages?access_token=#{System.get_env("PAGE_ACCESS_TOKEN")}",
+      body,
+      [{"Content-Type", "application/json"}]
+  end
+  
 end
