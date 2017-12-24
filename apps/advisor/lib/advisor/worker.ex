@@ -15,8 +15,7 @@ defmodule Advisor.Worker do
     case state do
       [] -> {:reply,
             [ { :text, "Hey, nice to talk to you. I hope I can help you with your property journey. I'd like to ask some information so that I can give you appropriate advice"},
-              { :text, "What is your purpose of buying a property"},
-              { :choice, [{"invest", "investment"}, {"residential", "owner occupy"}]}
+              { :choice, "what's the purpose of the property?", [{"invest", "investment"}, {"residential", "owner occupy"}]}
             ],
             [:init]}
       [:init] -> {:reply, 

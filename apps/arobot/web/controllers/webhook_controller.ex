@@ -46,15 +46,15 @@ defmodule Arobot.WebhookController do
       [{"Content-Type", "application/json"}]
   end
 
-  defp send_message(sender_id, {:choice, content}) do
+  defp send_message(sender_id, {:choice, text, choices}) do
     body = %{
       "messaging_type": "RESPONSE",
       "recipient": %{
         "id": sender_id,
       },
       "message": %{
-        "text": "quick reply",
-        "quick_replies": Enum.map(content, fn(c) ->
+        "text": text,
+        "quick_replies": Enum.map(choices, fn(c) ->
           %{
             "content_type": "text",
             "title": elem(c, 0),
