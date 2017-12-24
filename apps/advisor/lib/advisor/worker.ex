@@ -11,6 +11,10 @@ defmodule Advisor.Worker do
   end
 
   ###SERVER API
+  def handle_call({:next, "restart"}, _from, _) do
+    {:reply, [{:text,  "restart the coversation"}], [] }
+  end
+
   def handle_call({:next, message}, _from, state) do
     case state do
       [] -> {:reply,
