@@ -1,9 +1,11 @@
+alias Advisor.Fsm
+
 defmodule Advisor.Worker do
   use GenServer
 
   ###CLIENT API###
   def start_link(_args) do
-    GenServer.start_link(__MODULE__, [], name: __MODULE__)
+    GenServer.start_link(__MODULE__, %{step: :start}, name: __MODULE__)
   end
 
   def next(message) do
@@ -11,20 +13,12 @@ defmodule Advisor.Worker do
   end
 
   ###SERVER API
-  def handle_call({:next, "restart"}, _from, _) do
-    {:reply, [{:text,  "restart the coversation"}], [] }
+  def init(%{step: :start}) do
+    {:ok, %{step: :start}}
   end
 
   def handle_call({:next, message}, _from, state) do
-    case state do
-      [] -> {:reply,
-            [ { :text, "Hey, nice to talk to you. I hope I can help you with your property journey. I'd like to ask some information so that I can give you appropriate advice"},
-              { :choice, "what's the purpose of the property?", [{"invest", "investment"}, {"residential", "owner occupy"}]}
-            ],
-            [:init]}
-      [:init] -> {:reply, 
-          [{:text, "ok, so you want to #{message}"}], [:purpose] }
-      _ -> {:reply, [{:text,  "thank you, finished"}], [:purpose] }
-    end
+    {reply, next_state} = Fsm.next(state, message)
+    {:reply, reply, next_state}
   end
 end
