@@ -69,7 +69,7 @@ defmodule Advisor.Fsm do
       ]}]
     
     cond do
-      Enum.member?(["nsw", "vic", "nt", "tas", "sa", "wa"], message) -> { next_question, Map.merge(state, %{step: :budget, state: message})}
+      Enum.member?(["nsw", "vic", "qld", "nt", "tas", "sa", "wa"], message) -> { next_question, Map.merge(state, %{step: :budget, state: message})}
       message == "back" -> next(Map.put(state, :step, :purpose), Map.get(state, :purpose))
       true -> { @retry, state }
     end
