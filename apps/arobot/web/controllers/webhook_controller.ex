@@ -26,6 +26,7 @@ defmodule Arobot.WebhookController do
 
   defp reply(sender_id, message) do
     message
+      |> String.trim
       |> String.downcase
       |> Advisor.Worker.next
       |> Enum.map(&send_message(sender_id, &1))

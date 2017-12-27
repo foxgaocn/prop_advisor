@@ -18,7 +18,7 @@ defmodule Advisor.Worker do
   end
 
   def handle_call({:next, message}, _from, state) do
-    {reply, next_state} = Fsm.next(state, message)
-    {:reply, reply, next_state}
+    {next_question, next_state} = Fsm.next(state, message)
+    {:reply, next_question, next_state}
   end
 end
